@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Authorize Failed</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">Book Store Storage management</div>
+        <!-- header -->
+        <ul class="layui-nav layui-layout-left">
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- left navi -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- main part -->
+        <div style="padding: 35px;">
+            <blockquote class="layui-elem-quote">
+                No Authorization
+            </blockquote>
+        </div>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- footer -->
+        © Meiyu
+    </div>
+</div>
+<script>
+    //JavaScript
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+</script>
+</body>
+</html>

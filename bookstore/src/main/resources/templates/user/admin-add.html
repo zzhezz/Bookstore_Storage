@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="username" class="layui-form-label">
+                    <span class="x-red">*</span>Username
+                    <span id="userInfo"></span>
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="username" name="username" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" onchange="checkexist()">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>Will become your only login name
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="phone" class="layui-form-label">
+                    <span class="x-red">*</span>Phone
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="phone" name="phone" required=""
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_email" class="layui-form-label">
+                    <span class="x-red">*</span>Email
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_email" name="email" required="" lay-verify="email"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span class="x-red">*</span>Gender</label>
+                <div class="layui-input-block">
+                    <input th:value="m" type="radio" name="sex" lay-skin="primary" title="Male" checked>
+                    <input th:value="f" type="radio" name="sex" lay-skin="primary" title="Female">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="username" class="layui-form-label">
+                    <span class="x-red">*</span>Permission
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="perm" name="perm" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>C/R/U/D
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span class="x-red">*</span>Roles</label>
+                <div class="layui-input-block">
+                    <input th:value="guest" type="radio" name="role" lay-skin="primary" title="Guest" checked="">
+                    <input th:value="super-administrator" type="radio" name="role" lay-skin="primary" title="Supreme Administrator">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_pass" class="layui-form-label">
+                    <span class="x-red">*</span>Password
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_pass" name="pass" required="" lay-verify="pass"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    6-16 characters
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label">
+                    <span class="x-red">*</span>Confirm password
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label">
+                </label>
+                <button id="addbutton" class="layui-btn" lay-filter="add" lay-submit="" onclick="aa()">
+                    Add
+                </button>
+                <<span id="usernametip" class="x-red" style="font-weight: bold"> </span>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        form.verify({
+            nikename: function (value) {
+                if (value.length < 5) {
+                    return 'Username at least 5 character!';
+                }
+            },
+            pass: [/(.+){6,12}$/, 'Password length between 6-12! '],
+            repass: function (value) {
+                if ($('#L_pass').val() != $('#L_repass').val()) {
+                    return 'Inconsistent passwords!';
+                }
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            console.log(data);
+            //发异步，把数据提交给php
+            var username = data.field.username;
+            var pass = data.field.pass;
+            var phone = data.field.phone;
+            var email = data.field.email;
+            var sex = data.field.sex;
+            var perm = data.field.perm;
+            var role = data.field.role;
+            var repass = data.field.repass;
+            $.ajax({
+                type: 'post',
+                url: "/user/add",
+                data: {
+                    'username': username,
+                    'password': pass,
+                    'phone': phone,
+                    'email': email,
+                    'sex': sex,
+                    'perm': perm,
+                    'role': role
+                },
+                success: function (res) {
+                    console.log("=====================================================================" + res);
+                }
+            });
+            layer.alert("Success", {icon: 6}, function () {
+                xadmin.close();
+                xadmin.father_reload();
+            });
+            return false;
+        });
+    });
+
+    function checkexist() {
+        var name = document.getElementById('username').value;
+        $.ajax({
+            url: "/user/checkexist/" + name,
+            type: "GET",
+            success: function (result) {
+                if (result == 'exist') {
+                    $('#usernametip').html("Username is Unavailable. Please change. ");
+                    $('#addbutton').attr("disabled","true");
+                } else {
+                    $('#usernametip').html("Username is Available");
+                    $('#addbutton').removeAttr("disabled");
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+
+</html>

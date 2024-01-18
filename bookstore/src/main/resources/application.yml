@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: myspringboot
+  output:
+    ansi:
+      enabled: always
+  profiles:
+    active: dev
+  thymeleaf:
+    encoding: UTF-8
+    prefix: classpath:/templates/
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    max-connections: 500
+    min-spare-threads: 25
+    max-threads: 300
+    accept-count: 200
+  port: 9000
+
+
+mybatis:
+  type-aliases-package: com.meiyu.entity
+  mapper-locations: classpath:mapper/*.xml
+
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/bookstore?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat
+
+    maxActive: 20
+
+    initialSize: 1
+
+    maxWait: 60000
+
+    minIdle: 1
+
+    timeBetweenEvictionRunsMillis: 60000
+
+    minEvictableIdleTimeMillis: 300000
+
+    validationQuery: select 'x'
+
+    testWhileIdle: true
+
+    testOnBorrow: false
+
+    testOnReturn: false
+
+    poolPreparedStatements: true
+
+    maxOpenPreparedStatements: 20

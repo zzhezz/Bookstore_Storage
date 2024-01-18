@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,book-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+</head>
+
+<body>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+                <a href="">Front Page</a>
+                <a href="">Demo</a>
+                <a>
+                    <cite>Navi</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="refresh">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <div class="layui-input-inline layui-show-xs-block">
+                        <input id="kind" type="text" name="kind" placeholder="category" autocomplete="off"
+                               class="layui-input"></div>
+                    <div class="layui-input-inline layui-show-xs-block">
+                        <button class="layui-btn" onclick="kindsearch()">
+                            <i class="layui-icon">&#xe615;</i></button>
+                    </div>
+                </div>
+                <div class="layui-card-header">
+                    <button shiro:hasPermission="C" class="layui-btn"
+                            onclick="xadmin.open('Add Book','/book/to-book-add',600,460)">
+                        <i class="layui-icon"></i>Add
+                    </button>
+                    <button class="layui-btn layui-btn-normal" onclick="backtoBooklist()">Book List</button>
+
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>Arrival date</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="book:${page.list}">
+                            <td th:text="${book.id}"></td>
+                            <td th:text="${book.bookname}"></td>
+                            <td th:text="${book.pub}"></td>
+                            <td th:text="${book.price}"></td>
+                            <td th:text="${book.date}"></td>
+                            <td th:text="${book.count}"></td>
+                            <td th:text="${book.kind}"></td>
+                            <td class="td-manage">
+                                <a shiro:hasPermission="U" title="edit" th:value="${book.id}"
+                                   onclick="xadmin.open2('edit','/book/to-book-edit/','600','540',false,this)"
+                                   href="javascript:;">
+                                    <i class="layui-icon">&#xe63c;</i></a>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                <a shiro:hasPermission="D" title="delete" th:value="${book.id}" onclick="member_del(this)">
+                                    <i class="layui-icon">&#xe640;</i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:if="${page.pageNum} le 1">
+                            <a class="prev" th:href="@{/book/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/book/selectList(pn=${page.pageNum})}">last page</a>
+                            <span class="current" th:href="@{/book/selectList(pn=${page.pageNum})}"
+                                  th:text="${page.pageNum}"></span>
+                            <a class="num" th:if="${page.pageNum} lt ${page.pages}"
+                               th:href="@{/book/selectList(pn=${page.pageNum+1})}">next page</a>
+                            <a class="next" th:href="@{/book/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+                        <div th:if="${page.pageNum} != 1 and ${page.pageNum} ge ${page.pages}">
+                            <a class="prev" th:href="@{/book/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/book/selectList(pn=${page.pageNum -1})}">last page</a>
+                            <span class="current" th:href="@{/book/selectList(pn=${page.pageNum})}"
+                                  th:text="${page.pageNum}"></span>
+                            <a class="num" th:href="@{/book/selectList(pn=${page.pageNum})}">next page</a>
+                            <a class="next" th:href="@{/book/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+
+                        <div th:if="${page.pageNum} gt 1 and ${page.pageNum} lt ${page.pages}">
+                            <a class="prev" th:href="@{/book/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/book/selectList(pn=${page.pageNum -1})}">last page</a>
+                            <span class="current" th:href="@{/book/selectList(pn=${page.pageNum})}"
+                                  th:text="${page.pageNum}"></span>
+                            <a class="num" th:href="@{/book/selectList(pn=${page.pageNum+1})}">next page</a>
+                            <a class="next" th:href="@{/book/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>layui.use(['laydate', 'form'],
+    function () {
+
+        $ = layui.jquery;
+        var form = layui.form;
+
+        var laydate = layui.laydate;
+
+
+        laydate.render({
+            elem: '#start'
+        });
+
+
+        laydate.render({
+            elem: '#end'
+        });
+
+    });
+
+
+/*user-terminate*/
+function member_stop(obj, id) {
+    layer.confirm('Are you sure you want to deactivate it?',
+        function (index) {
+
+            if ($(obj).attr('title') == 'On') {
+
+
+                $(obj).attr('title', 'deactivate');
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('deactivated');
+                layer.msg('deactivated!', {
+                    icon: 5,
+                    time: 1000
+                });
+
+            } else {
+                $(obj).attr('title', 'On');
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('Activated!');
+                layer.msg('Activated!', {
+                    icon: 5,
+                    time: 1000
+                });
+            }
+
+        });
+}
+
+/*user-deletion*/
+function member_del(obj) {
+    var id = obj.getAttribute('value');
+    layer.confirm('Are you sure you want to delete it？',
+        function (index) {
+            $(obj).parents("tr").remove();
+            $.ajax({
+                type: 'GET',
+                url: "/book/deleteById",
+                data: {'id': id},
+            });
+            layer.msg('Deleted!', {
+                icon: 1,
+                time: 1000
+            });
+        });
+}
+
+function delAll(argument) {
+
+    var data = tableCheck.getData();
+
+    layer.confirm('Are you sure you want to delete it？' + data,
+        function (index) {
+            //select all the books be selected and delete.
+            layer.msg('Delete Success', {
+                icon: 1
+            });
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+}
+
+
+function kindsearch() {
+    var kind = document.getElementById('kind').value;
+    //trim the space in the front and the end of the search category
+    var kin = $.trim(kind);
+    if (kin.length == 0) {
+        alert("Please enter valid category");
+    } else {
+        window.location.href = "/book/toSearchList/" + kin;
+    }
+}
+function backtoBooklist() {
+    window.location.href = "/book/selectList";
+}
+
+</script>
+
+</html>

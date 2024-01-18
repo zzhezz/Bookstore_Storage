@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+</head>
+<body>
+<div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">Home Page</a>
+            <a href="">Demo</a>
+            <a>
+              <cite>Navi</cite></a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="Refresh">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <div class="layui-input-inline layui-show-xs-block">
+                        <input id="username" type="text" name="username" placeholder="type in username and search" autocomplete="off"
+                               class="layui-input"></div>
+                    <div class="layui-input-inline layui-show-xs-block">
+                        <button class="layui-btn" onclick="usernamesearch()">
+                            <i class="layui-icon">&#xe615;</i></button>
+                    </div>
+                </div>
+                <div class="layui-card-header">
+                    <button shiro:hasPermission="C" class="layui-btn" onclick="xadmin.open('add User','/user/to-admin-add',600,540)"><i class="layui-icon"></i>Add
+                    </button>
+                    <button class="layui-btn layui-btn-normal" onclick="backtoUserlist()">User List</button>
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr >
+                            <th style="text-align: center" width="16%">Id</th>
+                            <th width="16%">User Name</th>
+                            <th width="16%">Phone</th>
+                            <th width="16%">Email</th>
+                            <th width="16%">Gender</th>
+                            <th width="16%">Role</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user:${page.list}">
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.sex}"></td>
+                            <td th:text="${user.role}"></td>
+                            <td class="td-manage">
+                                <a shiro:hasPermission="A" title="Edit" th:value="${user.id}" onclick="xadmin.open2('edit','/user/to-admin-edit/','','',false,this)" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>
+                                </a>
+                                <span>&nbsp;&nbsp;&nbsp;</span>
+                                <a shiro:hasPermission="D" title="Delete" th:value="${user.id}" onclick=member_del(this)>
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <!--First Page, when page number < first page, show first page-->
+                        <div th:if="${page.pageNum} le 1">
+                            <a class="prev" th:href="@{/user/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/user/selectList(pn=${page.pageNum})}">last page</a>
+                            <span class="current" th:href="@{/user/selectList(pn=${page.pageNum})}" th:text="${page.pageNum}"></span>
+                            <a class="num" th:if="${page.pageNum} lt ${page.pages}" th:href="@{/user/selectList(pn=${page.pageNum+1})}">next page</a>
+                            <a class="next" th:href="@{/user/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+                        <!--Last Page, when page number > last page, show last page-->
+                        <div th:if="${page.pageNum} != 1 and ${page.pageNum} ge ${page.pages}">
+                            <a class="prev" th:href="@{/user/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/user/selectList(pn=${page.pageNum -1})}">last page</a>
+                            <span class="current" th:href="@{/user/selectList(pn=${page.pageNum})}" th:text="${page.pageNum}"></span>
+                            <a class="num" th:href="@{/user/selectList(pn=${page.pageNum})}">next page</a>
+                            <a class="next" th:href="@{/user/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+                        <!--Not the First and Last Page-->
+                        <div th:if="${page.pageNum} gt 1 and ${page.pageNum} lt ${page.pages}">
+                            <a class="prev" th:href="@{/user/selectList(pn=1)}">&lt;&lt;</a>
+                            <a class="num" th:href="@{/user/selectList(pn=${page.pageNum -1})}">last page</a>
+                            <span class="current" th:href="@{/user/selectList(pn=${page.pageNum})}" th:text="${page.pageNum}"></span>
+                            <a class="num" th:href="@{/user/selectList(pn=${page.pageNum+1})}">next page</a>
+                            <a class="next" th:href="@{/user/selectList(pn=${page.pages})}">&gt;&gt;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate', 'form'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+        laydate.render({
+            elem: '#start'
+        });
+
+        laydate.render({
+            elem: '#end'
+        });
+    });
+
+    /*Delete User*/
+    function member_del(obj) {
+        //get user id
+        var id = obj.getAttribute('value');
+        layer.confirm('Are you sure you want to delete this user？', function (index) {
+            $(obj).parents("tr").remove();
+            //After confirmation, deletion processed.
+            $.ajax({
+                type: 'GET',
+                url: "/user/deleteById",
+                data: {'id':id},
+            });
+            layer.msg('Deleted!', {icon: 1, time: 1000});
+        });
+    }
+
+    function usernamesearch() {
+        var username = document.getElementById('username').value;
+        //trim the space key.
+        var uname = $.trim(username);
+        if (uname .length == 0) {
+            alert("please type in username");
+        } else {
+            window.location.href = "/user/usernameSearch/" + uname;
+        }
+    }
+
+    function backtoUserlist() {
+        window.location.href = "/user/selectList";
+    }
+
+
+</script>
+</html>
