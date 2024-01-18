@@ -1,6 +1,10 @@
 # Bookstore Storage Management System 
 **Objective:** To develop a comprehensive and efficient Bookstore Storage Management system that caters to the needs of both managerial and basic user roles, ensuring proper access control and real-time tracking of inventory.
 
+### Video Illustration
+
+  [http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/KXK4x1ruUm4?si=c-NL1iMYk3znZmj2](https://youtu.be/KXK4x1ruUm4?si=kzMoSIRJV9BWMPJL)
+
 ### **Technological Stack:**
 
 1. **Frontend:** LayUI for rapid and responsive UI development. LayUI is also super useful for form display.
